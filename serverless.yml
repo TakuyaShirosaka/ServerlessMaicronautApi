@@ -1,0 +1,33 @@
+service: MaicronautApi
+frameworkVersion: '2 || 3'
+
+custom:
+  defaultStage: dev
+
+provider:
+  name: aws
+  runtime: provided.al2
+  timeout: 10
+  memorySize: 512
+  region: ap-northeast-1
+  stage: ${opt:stage, self:custom.defaultStage}
+
+package:
+  artifact: build/libs/micronautguide-0.1-lambda.zip
+
+functions:
+  MaicronautApi-root:
+    handler: hello.handler
+    events:
+      - http:
+          path: /
+          method: ANY
+          cors: true
+
+  MaicronautApi-proxy:
+    handler: hello.handler
+    events:
+      - http:
+          path: /{proxy+}
+          method: ANY
+          cors: true
